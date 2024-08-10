@@ -7,11 +7,19 @@ function getIdsFromVideoElement() {
     return [rawId?.split(".")[0].replaceAll("_", "/"), rawId?.split(".")[1]];
 }
 
+function getIdsFromNextJsData() {
+
+    const json = JSON.parse(document.getElementById("__NEXT_DATA__").innerText);
+    const productionId = json.props.pageProps.episode.productionId;
+
+    return productionId.split("#");
+}
+
 function addFakeBreaksWatched(idBase, idIndex, count=20) {
 
     const storage = JSON.parse(localStorage.getItem("genie-productions")) || {};
 
-    localStorage.setItem("genie-productions", JSON.stringify(
+    localStorage.setItem("productions", JSON.stringify(
         {
             ...storage,
             [idBase]: {
@@ -36,7 +44,7 @@ setTimeout(() => {
 
     console.log(logMsg("Running"));
 
-    const [idBase, idIndex] = getIdsFromVideoElement();
+    const [idBase, idIndex] = getIdsFromNextJsData();
 
     if (!idBase || !idIndex) {
 
