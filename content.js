@@ -35,7 +35,7 @@ function addFakeBreaksWatched(idBase, idIndex, count=20) {
     ));
 }
 
-const DELAY_MS = 1000;
+const DELAY_MS = 200;
 const BREAKS_WATCHED_COUNT = 20;
 
 console.log(logMsg(`Waiting ${DELAY_MS}ms`));
