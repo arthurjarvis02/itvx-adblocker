@@ -17,7 +17,7 @@ function getIdsFromNextJsData() {
 
 function addFakeBreaksWatched(idBase, idIndex, count=20) {
 
-    const storage = JSON.parse(localStorage.getItem("genie-productions")) || {};
+    const storage = JSON.parse(localStorage.getItem("productions")) || {};
 
     localStorage.setItem("productions", JSON.stringify(
         {
