@@ -10,7 +10,19 @@ function getIdsFromVideoElement() {
 function getIdsFromNextJsData() {
 
     const json = JSON.parse(document.getElementById("__NEXT_DATA__").innerText);
-    const productionId = json.props.pageProps.episode.productionId;
+
+    console.log(logMsg("Finding episode ID in NEXT_DATA"))
+    
+    let productionId = json.props.pageProps.episode?.productionId;
+
+    if (!productionId) {
+
+        console.log("No episode selected, finding video ID from first episode in selected series")
+
+        const selectedSeries = json.props.pageProps.seriesList.find(series => series.seriesNumber === json.props.pageProps.initialSelectedSeries);
+
+        productionId = selectedSeries.titles[0].productionId;
+    }
 
     return productionId.split("#");
 }
