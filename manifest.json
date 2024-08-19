@@ -2,7 +2,7 @@
     "manifest_version": 3,
 
     "name": "ITVX Adblocker",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "author": "arthurjarvis02",
     "description": "Remove ad breaks from ITVX",
     "icons": {
