@@ -3,7 +3,7 @@
 
     "name": "ITVX Adblocker",
     "version": "0.3.0",
-    "author": "Arthur Jarvis",
+    "author": "arthurjarvis02",
     "description": "Remove ad breaks from ITVX",
     "icons": {
         "16": "icons/icon16.png",
