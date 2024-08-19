@@ -30,9 +30,14 @@ jobs:
           apiSecret: ${{ secrets.AMO_SIGN_SECRET }}
           timeout: 900000
 
+      - name: "Rename xpi"
+        id: rename-xpi
+        run: mv ${{ steps.web-ext-sign.outputs.target }} itvx-adblocker-firefox-${{ github.ref_name }}.xpi
+
       - name: "Create Release"
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: ${{ steps.web-ext-sign.outputs.target }}
+          body: ""
