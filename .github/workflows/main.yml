@@ -34,9 +34,15 @@ jobs:
         id: rename-xpi
         run: mv ${{ steps.web-ext-sign.outputs.target }} itvx-adblocker-firefox-${{ github.ref_name }}.xpi
 
+      - name: "Zip /extension"
+        id: zip-extension
+        run: git archive -o itv-adblocker-chrome-${{ github.ref_name }}.zip HEAD:extension
+
       - name: "Create Release"
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: itvx-adblocker-firefox-${{ github.ref_name }}.xpi
+          files: |
+            itvx-adblocker-firefox-${{ github.ref_name }}.xpi
+            itvx-adblocker-chrome-${{ github.ref_name }}.zip
