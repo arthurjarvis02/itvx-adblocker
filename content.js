@@ -1,12 +1,5 @@
 const logMsg = (msg) => `[ITVX Adblocker] ${msg}`;
 
-function getIdsFromVideoElement() {
-
-    const rawId = document.getElementsByClassName("genie-container")[0]?.getAttribute("data-video-id")?.split("/").slice(-1)[0];
-
-    return [rawId?.split(".")[0].replaceAll("_", "/"), rawId?.split(".")[1]];
-}
-
 function getIdsFromNextJsData() {
 
     const json = JSON.parse(document.getElementById("__NEXT_DATA__").innerText);
