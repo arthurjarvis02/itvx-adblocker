@@ -1,3 +1,5 @@
+BREAKS_WATCHED_COUNT = 20;
+
 const logMsg = (msg) => `[ITVX Adblocker] ${msg}`;
 
 function getIdsFromNextJsData() {
@@ -40,12 +42,7 @@ function addFakeBreaksWatched(idBase, idIndex, count=20) {
     ));
 }
 
-const DELAY_MS = 200;
-const BREAKS_WATCHED_COUNT = 20;
-
-console.log(logMsg(`Waiting ${DELAY_MS}ms`));
-
-setTimeout(() => {
+function run() {
 
     console.log(logMsg("Running"));
 
@@ -62,5 +59,6 @@ setTimeout(() => {
     addFakeBreaksWatched(idBase, idIndex, BREAKS_WATCHED_COUNT);
 
     console.log(logMsg(`Removed ad breaks 1-${BREAKS_WATCHED_COUNT}`));
+}
 
-}, DELAY_MS);
+run();
