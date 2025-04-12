@@ -36,7 +36,7 @@ jobs:
 
       - name: "Zip /extension"
         id: zip-extension
-        run: git archive -o web-ext-artifacts/itv-adblocker-chrome-${{ github.ref_name }}.zip HEAD:extension
+        run: git archive -o web-ext-artifacts/itvx-adblocker-chrome-${{ github.ref_name }}.zip HEAD:extension
 
       - name: "Create Release"
         uses: softprops/action-gh-release@v1
