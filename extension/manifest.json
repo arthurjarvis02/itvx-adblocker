@@ -14,7 +14,7 @@
     
     "content_scripts": [
         {
-            "js": ["content.js"],
+            "js": ["encryption.js", "content.js"],
             "matches": ["*://*.itv.com/watch/*"]
         }
     ],
