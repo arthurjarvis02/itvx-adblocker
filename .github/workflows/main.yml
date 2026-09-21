@@ -38,6 +38,21 @@ jobs:
         id: zip-extension
         run: git archive -o web-ext-artifacts/itvx-adblocker-chrome-${{ github.ref_name }}.zip HEAD:extension
 
+      - name: "Build update.json"
+        id: update-manifest
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          EXT_ID=$(jq -r '.browser_specific_settings.gecko.id' extension/manifest.json)
+          XPI_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/itvx-adblocker-firefox-${GITHUB_REF_NAME}.xpi"
+          XPI_HASH="sha256:$(sha256sum itvx-adblocker-firefox-${GITHUB_REF_NAME}.xpi | cut -d' ' -f1)"
+          jq -n \
+            --arg id "$EXT_ID" \
+            --arg version "$VERSION" \
+            --arg link "$XPI_URL" \
+            --arg hash "$XPI_HASH" \
+            '{addons: {($id): {updates: [{version: $version, update_link: $link, update_hash: $hash}]}}}' \
+            > update.json
+
       - name: "Create Release"
         uses: softprops/action-gh-release@v1
         env:
@@ -46,3 +61,4 @@ jobs:
           files: |
             itvx-adblocker-firefox-${{ github.ref_name }}.xpi
             itvx-adblocker-chrome-${{ github.ref_name }}.zip
+            update.json
