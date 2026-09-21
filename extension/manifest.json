@@ -2,7 +2,7 @@
     "manifest_version": 3,
 
     "name": "ITVX Adblocker",
-    "version": "0.4.3",
+    "version": "0.5.0",
     "author": "arthurjarvis02",
     "description": "Remove ad breaks from ITVX",
     "icons": {
@@ -14,7 +14,7 @@
     
     "content_scripts": [
         {
-            "js": ["content.js"],
+            "js": ["encryption.js", "content.js"],
             "matches": ["*://*.itv.com/watch/*"]
         }
     ],

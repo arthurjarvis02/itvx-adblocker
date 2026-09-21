@@ -1,5 +1,7 @@
 const logMsg = (msg) => `[ITVX Adblocker] ${msg}`;
 
+const encryption = new Encryption();
+
 function getIdsFromNextJsData() {
 
     const json = JSON.parse(document.getElementById("__NEXT_DATA__").innerText);
@@ -10,7 +12,7 @@ function getIdsFromNextJsData() {
 
     if (!productionId) {
 
-        console.log("No episode selected, finding video ID from first episode in selected series")
+        console.log(logMsg("No episode selected, finding video ID from first episode in selected series"));
 
         const selectedSeries = json.props.pageProps.seriesList.find(series => series.seriesNumber === json.props.pageProps.initialSelectedSeries);
 
@@ -22,9 +24,10 @@ function getIdsFromNextJsData() {
 
 function addFakeBreaksWatched(idBase, idIndex, count=20) {
 
-    const storage = JSON.parse(localStorage.getItem("productions")) || {};
+    const raw = encryption.getItem("productions") ?? encryption.getLegacyItem("productions");
+    const storage = JSON.parse(raw) || {};
 
-    localStorage.setItem("productions", JSON.stringify(
+    encryption.setItem("productions", JSON.stringify(
         {
             ...storage,
             [idBase]: {
