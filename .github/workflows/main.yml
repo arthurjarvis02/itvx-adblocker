@@ -3,14 +3,23 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release (e.g. v0.5.0)"
+        required: true
 
 jobs:
   sign:
     name: "Release"
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@v1
+        with:
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: "web-ext build"
         id: web-ext-build
@@ -32,19 +41,19 @@ jobs:
 
       - name: "Rename xpi"
         id: rename-xpi
-        run: mv ${{ steps.web-ext-sign.outputs.target }} itvx-adblocker-firefox-${{ github.ref_name }}.xpi
+        run: mv ${{ steps.web-ext-sign.outputs.target }} itvx-adblocker-firefox-${TAG}.xpi
 
       - name: "Zip /extension"
         id: zip-extension
-        run: git archive -o web-ext-artifacts/itvx-adblocker-chrome-${{ github.ref_name }}.zip HEAD:extension
+        run: git archive -o web-ext-artifacts/itvx-adblocker-chrome-${TAG}.zip HEAD:extension
 
       - name: "Build update.json"
         id: update-manifest
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${TAG#v}"
           EXT_ID=$(jq -r '.browser_specific_settings.gecko.id' extension/manifest.json)
-          XPI_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/itvx-adblocker-firefox-${GITHUB_REF_NAME}.xpi"
-          XPI_HASH="sha256:$(sha256sum itvx-adblocker-firefox-${GITHUB_REF_NAME}.xpi | cut -d' ' -f1)"
+          XPI_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/itvx-adblocker-firefox-${TAG}.xpi"
+          XPI_HASH="sha256:$(sha256sum itvx-adblocker-firefox-${TAG}.xpi | cut -d' ' -f1)"
           jq -n \
             --arg id "$EXT_ID" \
             --arg version "$VERSION" \
@@ -58,7 +67,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: ${{ env.TAG }}
           files: |
-            itvx-adblocker-firefox-${{ github.ref_name }}.xpi
-            itvx-adblocker-chrome-${{ github.ref_name }}.zip
+            itvx-adblocker-firefox-${{ env.TAG }}.xpi
+            itvx-adblocker-chrome-${{ env.TAG }}.zip
             update.json
