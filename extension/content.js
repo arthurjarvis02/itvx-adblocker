@@ -1,6 +1,6 @@
 const logMsg = (msg) => `[ITVX Adblocker] ${msg}`;
 
-function pollForPlayerVersion(intervalMs = 500, attempts = 10) {
+function pollForPlayerVersion(intervalMs = 100, attempts = 50) {
 
     return new Promise((resolve) => {
 
