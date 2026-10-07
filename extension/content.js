@@ -1,13 +1,24 @@
 const logMsg = (msg) => `[ITVX Adblocker] ${msg}`;
 
-function getPlayerVersion() {
+function pollForPlayerVersion(intervalMs = 500, attempts = 10) {
 
-    if (typeof window.__FE_PLAYER_VERSION__ !== "string") {
-        console.warn(logMsg("__FE_PLAYER_VERSION__ not found"));
-        return null;
-    }
+    return new Promise((resolve) => {
 
-    return window.__FE_PLAYER_VERSION__;
+        (function poll(attemptsLeft) {
+
+            if (typeof window.__FE_PLAYER_VERSION__ === "string") {
+                resolve(window.__FE_PLAYER_VERSION__);
+                return;
+            }
+
+            if (attemptsLeft <= 0) {
+                resolve(null);
+                return;
+            }
+
+            setTimeout(() => poll(attemptsLeft - 1), intervalMs);
+        })(attempts);
+    });
 }
 
 function getIdsFromNextJsData() {
@@ -53,11 +64,15 @@ function addFakeBreaksWatched(encryption, idBase, idIndex, count=20) {
     return count;
 }
 
-function run() {
+async function run() {
 
     console.log(logMsg("Running"));
 
-    const version = getPlayerVersion();
+    const version = await pollForPlayerVersion();
+
+    if (!version) {
+        console.warn(logMsg("__FE_PLAYER_VERSION__ not found"));
+    }
 
     console.log(logMsg(`Detected FE player version '${version ?? "fallback"}'`));
 
