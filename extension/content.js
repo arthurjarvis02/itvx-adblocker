@@ -1,6 +1,14 @@
 const logMsg = (msg) => `[ITVX Adblocker] ${msg}`;
 
-const encryption = new Encryption();
+function getPlayerVersion() {
+
+    if (typeof window.__FE_PLAYER_VERSION__ !== "string") {
+        console.warn(logMsg("__FE_PLAYER_VERSION__ not found"));
+        return null;
+    }
+
+    return window.__FE_PLAYER_VERSION__;
+}
 
 function getIdsFromNextJsData() {
 
@@ -22,7 +30,7 @@ function getIdsFromNextJsData() {
     return productionId.split("#");
 }
 
-function addFakeBreaksWatched(idBase, idIndex, count=20) {
+function addFakeBreaksWatched(encryption, idBase, idIndex, count=20) {
 
     const raw = encryption.getItem("productions") ?? encryption.getLegacyItem("productions");
     const storage = JSON.parse(raw) || {};
@@ -49,6 +57,12 @@ function run() {
 
     console.log(logMsg("Running"));
 
+    const version = getPlayerVersion();
+
+    console.log(logMsg(`Detected FE player version '${version ?? "fallback"}'`));
+
+    const encryption = new Encryption(version);
+
     const [idBase, idIndex] = getIdsFromNextJsData();
 
     if (!idBase || !idIndex) {
@@ -59,7 +73,7 @@ function run() {
 
     console.log(logMsg(`Episode IDs: ${idBase}, ${idIndex}`));
 
-    const count = addFakeBreaksWatched(idBase, idIndex);
+    const count = addFakeBreaksWatched(encryption, idBase, idIndex);
 
     console.log(logMsg(`Removed ad breaks 1-${count}`));
 }

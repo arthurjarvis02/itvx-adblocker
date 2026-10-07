@@ -1,4 +1,4 @@
-let version = "1.66.8";
+const FALLBACK_VERSION = "1.67.6";
 
 function hash(value) {
    let t = 0x811c9dc5;
@@ -8,15 +8,19 @@ function hash(value) {
    return t;
 }
 
-function makeString(key, cipherHex) {
-   return hash(`${version}|${key}|${cipherHex}`).toString(36);
-}
-
 function isEncrypted(value) {
    return "v1." === value.slice(0, 3);
 }
 
 class Encryption {
+   constructor(version) {
+       this.version = version || FALLBACK_VERSION;
+   }
+
+   makeString = (key, cipherHex) => {
+       return hash(`${this.version}|${key}|${cipherHex}`).toString(36);
+   };
+
    getItem = (key) => {
         let encrypted = localStorage.getItem(key);
 
@@ -32,10 +36,10 @@ class Encryption {
 
         let [, tag, cipherHex] = parts;
 
-        if (tag !== makeString(key, cipherHex) || cipherHex.length % 4 != 0) {
+        if (tag !== this.makeString(key, cipherHex) || cipherHex.length % 4 != 0) {
             return null;
         }
-        let keystream = hash(`${version}|${key}`),
+        let keystream = hash(`${this.version}|${key}`),
             decrypted = "";
         for (let idx = 0; idx < cipherHex.length / 4; idx += 1) {
             let code = parseInt(cipherHex.substr(4 * idx, 4), 16);
@@ -54,8 +58,8 @@ class Encryption {
    };
 
    setItem = (key, value) => {
-        let cipherHex = (function (key, value) {
-            let keystream = hash(`${version}|${key}`),
+        let cipherHex = ((key, value) => {
+            let keystream = hash(`${this.version}|${key}`),
                 hex = "";
             for (let idx = 0; idx < value.length; idx += 1)
                 hex += (
@@ -68,7 +72,7 @@ class Encryption {
        })(key, value);
        localStorage.setItem(
            key,
-           ["v1", makeString(key, cipherHex), cipherHex].join(".")
+           ["v1", this.makeString(key, cipherHex), cipherHex].join(".")
        );
    };
 }
